@@ -1,17 +1,9 @@
-int prefixCount(char** words, int wordsSize, char* pref) {
-    int len = strlen(pref), count = 0;
-    for (int i = 0; i < wordsSize; i++) {
-        if (strncmp(words[i], pref, len) == 0)
-            count++;
-    }
-    return count;
-}
-
+1) TwoSum:
 int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
-    int* result = (int*)malloc(2 * sizeof(int));
     for (int i = 0; i < numsSize; i++) {
         for (int j = i + 1; j < numsSize; j++) {
-            if (nums[i] + nums[j] == target) {
+            if (nums[j] == target - nums[i]) {
+                int* result = malloc(sizeof(int) * 2);
                 result[0] = i;
                 result[1] = j;
                 *returnSize = 2;
@@ -19,6 +11,589 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
             }
         }
     }
+    // Return an empty array if no solution is found
     *returnSize = 0;
-    return NULL;
+    return malloc(sizeof(int) * 0);
+}
+
+2) Add Two numbers:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode* listHead = (struct ListNode*)malloc(sizeof(struct ListNode));
+    struct ListNode* listTail = listHead;
+    listTail->val = 0;
+
+    
+    while (true) {
+        int val = (l1 ? l1->val: 0) + (l2 ? l2->val: 0) + listTail->val;
+
+        listTail->val = val % 10;
+        
+        l1 = l1 ? l1->next : NULL;
+        l2 = l2 ? l2->next : NULL;
+        
+        if (l1 || l2 || val/10) {
+            listTail->next = (struct ListNode*)malloc(sizeof(struct ListNode));
+            listTail->next->val = val/10;
+            listTail = listTail->next;
+            
+        }
+        else {
+            listTail->next = NULL;
+            return listHead;
+        }
+    }
+}
+
+7) Reverse Integers:
+int reverse(int x) {
+    long sum = 0;
+
+    while (x != 0) {
+        int rem = x % 10;
+        sum = sum * 10 + rem;
+        x = x / 10;
+    }
+
+    // Check for overflow (32-bit signed integer range)
+    if (sum > INT_MAX || sum < INT_MIN) {
+        return 0;
+    }
+
+    return (int)sum;
+}
+
+8) String to integers(atoi):
+int reverse(int x) {
+    long sum = 0;
+
+    while (x != 0) {
+        int rem = x % 10;
+        sum = sum * 10 + rem;
+        x = x / 10;
+    }
+
+    // Check for overflow (32-bit signed integer range)
+    if (sum > INT_MAX || sum < INT_MIN) {
+        return 0;
+    }
+
+    return (int)sum;
+}
+
+9) Palindrome Number:
+bool isPalindrome(int x){
+    if(x<0 || x!=0 && x%10 ==0 ) return false;
+    int check=0;
+    while(x>check){
+        check = check*10 + x%10;
+        x/=10;
+    }
+    return (x==check || x==check/10);
+}
+
+12) Integer to Roman:
+typedef struct {
+    const int value;
+    const char* string;
+    const int length;
+} Roman;
+
+const Roman romans[] = { 
+    { 1, "I", 1 }, 
+    { 4, "IV\0", 2 }, 
+    { 5, "V\0", 1 }, 
+    { 9, "IX\0", 2 }, 
+    { 10, "X\0", 1 }, 
+    { 40, "XL\0", 2 }, 
+    { 50, "L\0", 1 }, 
+    { 90, "XC\0", 2 }, 
+    { 100, "C\0", 1 }, 
+    { 400, "CD\0", 2 }, 
+    { 500, "D\0", 1 }, 
+    { 900, "CM\0", 2 }, 
+    { 1000, "M\0", 1 } 
+};
+const int romansLength = sizeof(romans) / sizeof(romans[0]);
+
+char* intToRoman(int num) {
+    char* result = malloc(sizeof(char) * 30);
+    int l = 0;
+    for (int i = romansLength - 1; i >= 0; i--) {
+        for (int j = num / romans[i].value; j > 0; j--) {
+            strcpy(result + l, romans[i].string);
+            l += romans[i].length;
+        }
+
+        num %= romans[i].value;
+    }
+
+    return result;
+}
+
+13) Roman to Integers:
+int getValue(char roman){
+    switch(roman){
+        case 'I': return 1;
+        case 'V': return 5;
+        case 'X': return 10;
+        case 'L': return 50;
+        case 'C': return 100;
+        case 'D': return 500;
+        case 'M': return 1000;
+        default : return 0; 
+    }
+}
+int romanToInt(char* s) {
+    int total =0;
+    int prevValue = 0;
+    for(int i = strlen(s)-1; i>=0; i--){
+        int currentvalue = getValue(s[i]);
+
+        if(currentvalue < prevValue){
+            total -= currentvalue;
+        }
+        else{
+            total += currentvalue;
+        }
+        prevValue = currentvalue;
+    }
+    return total;
+}
+
+14) Longest Common Prefix:
+char * longestCommonPrefix(char ** str, int size){
+
+    int i,j,flag=0,k=0,min=100000;
+    char *s = (char *)malloc(127*sizeof(char));
+    strcpy(s,"");
+    if(size==0)
+        return s;
+    char c;
+    for(i=0;i<size;i++)
+    {
+        if(min>strlen(str[i]))
+            min = strlen(str[i]);
+    }
+    for(i=0;i<min;i++,k++)
+    {
+        c = str[0][i];
+        for(j=0;j<size;j++)
+        {
+            if(str[j][i]!=c)
+            {
+                flag = 1;
+                break;
+            }
+        }
+    //    printf("%d ",flag);
+    //    printf("%d ",strlen(str[i]));
+        if(flag)
+            break;
+        else
+        {
+            s[k] = c;
+            s[k+1] = '\0';
+        }
+    }
+ //   printf("%s",s);
+    return s;
+}
+
+15) 3Sum:
+#include <stdlib.h>
+
+int cmp(const void *a,const void *b) {
+    return ((int) a) - ((int) b);
+}
+
+int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes){
+    qsort(nums, numsSize, sizeof(int), cmp);
+    (*returnSize) = 0;
+    (returnColumnSizes) = (int) malloc(sizeof(int) * numsSize * numsSize);
+    int *ret = (int) malloc(sizeof(int) * numsSize * numsSize);
+    for (int i = 0; i < numsSize - 2; i++) {
+        if (i == 0 || nums[i] != nums[i-1]) {
+            int l = i + 1;
+            int r = numsSize - 1;
+            while (l < r) {
+                if (nums[i] + nums[l] + nums[r] < 0) {
+                    l++;
+                } else if (nums[i] + nums[l] + nums[r] > 0) {
+                    r--;
+                } else {
+                    ret[(returnSize)] = (int) malloc(sizeof(int) * 3);
+                    (*returnColumnSizes)[(*returnSize)] = 3;
+                    ret[(*returnSize)][0] = nums[i];
+                    ret[(*returnSize)][1] = nums[l];
+                    ret[(*returnSize)][2] = nums[r];
+                    (*returnSize)++;
+                    l++;
+                    while (l < r && nums[l] == nums[l-1])
+                        l++;
+                }
+            }
+        }
+    }
+    return ret;
+}
+
+20) Valid Parentheses:
+#include <stdbool.h>
+#include <string.h>
+
+bool isValid(char* s) {
+    int n = strlen(s);
+    char stack[n];
+    int top = -1;
+    int i = 0;
+    while (i < n)
+    {
+        char c = s[i];
+        if (c == '(' || c == '{' || c == '[')
+            stack[++top] = c;
+        else
+        {
+            if (top == -1)
+                return false;
+            char topChar = stack[top--];
+            if ((c == ')' && topChar != '(') || 
+                (c == '}' && topChar != '{') ||
+                (c == ']' && topChar != '['))
+                return false;
+        }
+        i++;
+    }
+    return top == -1;
+}
+
+21)  Merger Two Sorted Lists:
+struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2){
+    struct ListNode* res=NULL;
+    if(l1==NULL)
+        return l2;
+    else if(l2==NULL)
+        return l1;
+    if(l1->val <= l2->val){
+        res=l1;
+        res->next = mergeTwoLists(l1->next,l2);
+    }
+    else{
+        res=l2;
+       res->next = mergeTwoLists(l1,l2->next);
+    }
+    return res;
+        
+    
+}
+
+26) Remove Duplicates From Sorted Arrays:
+int removeDuplicates(int* nums, int numsSize) {
+  int c=1;
+  for(int i=0;i<numsSize;i++){
+    if( nums[i]!=nums[c-1]){
+        nums[c]=nums[i];
+        c++;
+    }
+  }
+  return c;
+}
+
+27) Remove Elements:
+int removeElement(int *nums, int numsSize, int val) {
+    int count = 0;
+
+    for (int i = 0; i < numsSize; i++)
+        if (nums[i] == val) 
+            count++;
+        else 
+            nums[i - count] = nums[i];
+    return (numsSize - count);
+}
+
+28) Find the index of the first occurence in a string:
+int strStr(char* haystack, char* needle) {
+    int haystack_size = strlen(haystack);
+    int needle_size = strlen(needle);
+    int result = -1;
+    int i = 0;  // haystack
+    int j = 0;  // needle
+
+    while (i < (haystack_size) && j < needle_size) {
+        if (haystack[i] == needle[j]) {
+            i++;
+            j++;
+        }
+        else {
+            i = i - j + 1;
+            j = 0;
+        }
+    }
+
+    return result = (j == needle_size) ? (i - needle_size) : -1;
+}
+
+29) Divide 2 integers:
+int divide(int dividend, int divisor) {
+    // Handle overflow edge case
+    if (dividend == INT_MIN && divisor == -1) {
+        return INT_MAX; 
+    }
+
+    // Determine the sign of the result
+    int sign = (dividend > 0) == (divisor > 0) ? 1 : -1;
+
+    // Work with positive values for simplicity
+    long long absDividend = llabs((long long) dividend);
+    long long absDivisor = llabs((long long) divisor);
+
+    long long quotient = 0;
+
+    // Subtract the divisor from the dividend using bitwise shifts
+    while (absDividend >= absDivisor) {
+        long long tempDivisor = absDivisor;
+        long long multiple = 1;
+        while (absDividend >= (tempDivisor << 1)) {
+            tempDivisor <<= 1;
+            multiple <<= 1;
+        }
+        absDividend -= tempDivisor;
+        quotient += multiple;
+    }
+
+    // Apply the sign to the result
+    return (int) (sign * quotient);
+}
+
+35) Search insert Position:
+int searchInsert(int* nums, int numsSize, int target) {
+    int low = 0;
+    int high = numsSize - 1;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+
+        if (nums[mid] == target) {
+            return mid; 
+        }
+        if (nums[mid] < target) {
+            low = mid + 1;  
+        } else {
+            high = mid - 1; 
+        }
+    }
+    
+    return low;
+}
+
+58) Length of Last word:
+int lengthOfLastWord(char* s) {
+    int length=0,i,wordcounter=0;
+    for(i=0;s[i]!='\0';i++)
+    {
+        length++;
+    }
+    for(i=(length-1);s[i]==' ';i--)
+    {
+        if(s[i]==' ')
+        s[i]='\0';
+    }
+    for(i=0;s[i]!='\0';i++)
+    {
+        if(s[i]==' ')
+        {
+            wordcounter=0;
+            continue;
+        }
+        else
+        {
+            wordcounter++;
+        }
+    }
+    return wordcounter;
+    
+}
+
+66) Plus one:
+/** Note: The returned array must be malloced, assume     */
+/** caller calls free().                                  */
+int *plusOne(int *digits, int digitsSize, int *returnSize) {
+    *returnSize = digitsSize;
+    int *plusOne = malloc(digitsSize * sizeof(int));
+    if (plusOne == NULL)
+        return (NULL);
+    for (int i = 0; i < digitsSize; i++)
+        plusOne[i] = digits[i];
+    
+    plusOne[digitsSize - 1]++;
+    for (int i = digitsSize - 1; i - 1 >= 0; i--)
+        if (plusOne[i] == 10) {
+            plusOne[i] = 0;
+            plusOne[i - 1]++;
+        }
+
+    if (plusOne[0] == 10) {
+        (*returnSize)++;
+        plusOne = realloc(plusOne, *returnSize * sizeof(int));
+        if (plusOne == NULL)
+            return (NULL);
+        memmove(plusOne + 1, plusOne, digitsSize * sizeof(int));
+        plusOne[0] = 1;
+        plusOne[1] = 0;
+    }
+    return (plusOne);
+}
+
+67) Add binary:
+char* addBinary(char* a, char* b) {
+    int i=strlen(a), j=strlen(b);
+    int aux=0,k=fmax(i, j)+2;
+    char* result = (char*) malloc (sizeof(char) * k);
+    
+    result[--k] = '\0';
+    i--; j--;
+    while(--k >= 0){
+        aux += i >= 0 ? a[i--] - '0': 0;
+        aux += j >= 0 ? b[j--] - '0': 0;
+        result[k] = aux % 2 + '0';
+        aux /= 2;
+    }
+    if(result[0] == '0') return result+1;
+    return result;
+}
+
+69) Sqrt(x):
+int mySqrt(int x) {
+    if(x==0||x==1){
+        return x;
+    }
+    for(long long int i=1;i<=x;i++){
+        if(i*i>x){
+            return i-1;
+        }
+
+    }
+return 0;
+}
+
+78) Subsets:
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes array.
+ * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
+ */
+ #define MAX_ELEMENT 10
+int** subsets(int* nums, int numsSize, int* returnSize, int** returnColumnSizes) {
+
+    int totalSubset = 1<<numsSize;
+    int** aar = (int **)calloc(totalSubset, sizeof(int *));    
+    *returnColumnSizes = malloc(totalSubset*sizeof(int));
+    *returnSize = 0;
+
+    for(int i=0; i<totalSubset; i++){
+        aar[i] = (int *)malloc(numsSize*sizeof(int));
+        *(*returnColumnSizes+i) = 0;
+        int idx = 0;
+        //printf("[");
+        for(int k=0; k<numsSize; k++){
+            if(i & (1<<k)){
+                //printf("%d,", nums[k]);
+                aar[i][idx++] = nums[k];
+                *(*returnColumnSizes+i) +=1;                
+            }
+        }
+        //printf("]\n");
+
+    }
+
+    *returnSize = totalSubset;
+    /*printf("returnSize:%d\n", *returnSize);
+    for(int i=0; i<totalSubset; i++){
+        printf("returnColumnSizes[%d]:%d\n", i, *(*returnColumnSizes+i));
+    }*/
+    return aar;   
+}
+
+83) Remove duplicates from sorted lists:
+struct ListNode* deleteDuplicates(struct ListNode* head){
+    struct ListNode* curr = head;
+
+    while(curr != NULL && curr->next != NULL){
+        if(curr->val == curr->next->val)
+            curr->next = curr->next->next;
+        else
+            curr = curr->next;
+    }
+
+    return head;
+}
+
+88) Merge sorted Array:
+void merge(int* nums1, int nums1Size, int m, int* nums2, int nums2Size, int n) {
+    int p1=m-1;
+    int p2=n-1;
+    int p=m+n-1;
+    while(p1>=0 && p2>=0){
+        if(nums1[p1]>nums2[p2])
+            nums1[p--]=nums1[p1--];
+        else
+        nums1[p--]=nums2[p2--];
+    }
+    while(p2>=0)
+     nums1[p--]=nums2[p2--];
+}
+
+125) Valid Palindrome:
+int isAlphanum(char c){
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'); 
+}
+
+int convertAlphaLower(char c){
+    return (c >= 'A' && c <= 'Z') ? c + 32 : c;
+}
+
+int isPalindrome(char* s) {
+    int l, r;
+
+    r = strlen(s) - 1;
+
+    l = 0;
+    while (l < r){
+        if(isAlphanum(s[l])){
+
+            if(isAlphanum(s[r])){
+                
+                if (convertAlphaLower(s[l]) != convertAlphaLower(s[r])){
+
+                    return 0;
+                }
+
+                l++;
+                r--;
+            }
+            else 
+                r--;
+        }
+        else 
+            l++;
+    }
+
+    return (1);
+}
+
+136) Single Number:
+int singleNumber(int* nums, int numsSize)
+{
+    int r=0;
+    for(int i=0;i<numsSize;i++)
+    {
+        r=r^nums[i];
+    }
+    return r;
 }
